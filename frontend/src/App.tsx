@@ -5,8 +5,7 @@ function App() {
   return (
     <div className="app-container">
       <header className="app-header">
-        <h1>AI Chat</h1>
-        <p>Ask any question and get a response from the AI</p>
+        <p>Header</p>
       </header>
 
       <main className="app-main">
@@ -16,7 +15,7 @@ function App() {
       </main>
 
       <footer className="app-footer">
-        <p>Powered by FastAPI and React</p>
+        <p>Footer </p>
       </footer>
     </div>
   )

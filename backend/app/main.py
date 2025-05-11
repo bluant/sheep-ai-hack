@@ -24,7 +24,6 @@ async def pong():
     return {"status": "ok"}
 
 # Example "LLM proxy" route (optional)
-import httpx
 
 LLM_URL   = os.getenv("LLM_URL")
 LLM_MODEL = os.getenv("LLM_MODEL", "llama3")
