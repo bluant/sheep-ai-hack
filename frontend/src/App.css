@@ -54,6 +54,7 @@ body {
   display: flex;
   flex-direction: column;
   padding-bottom: 2rem;
+  gap: 10px;
 }
 
 .app-footer {
@@ -62,4 +63,10 @@ body {
   border-top: 1px solid var(--border-color);
   color: var(--light-text);
   font-size: 0.875rem;
+}
+
+.title-container {
+  display: flex;
+  padding: 10px;
+  font-weight: bold;
 }

@@ -2,3 +2,5 @@ fastapi==0.115.*
 uvicorn[standard]==0.34.*
 python-dotenv==1.1.*
 httpx==0.28.*
+faiss-cpu==1.11.*
+langchain-community==0.3.*

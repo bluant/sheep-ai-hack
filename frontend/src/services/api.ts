@@ -25,6 +25,24 @@ export const getChatStream = async (question: string): Promise<ReadableStream<Ui
 };
 
 /**
+ * Sends an ask request to the backend and returns a readable stream of the response
+ * @param question The question to send to the ask API
+ * @returns A ReadableStream of the response
+ */
+export const getAskStream = async (question: string): Promise<ReadableStream<Uint8Array>> => {
+  const response = await fetch(`${API_BASE_URL}/ask?q=${encodeURIComponent(question)}`, {
+    method: 'GET',
+    headers: {
+      'Accept': 'text/plain',
+    },
+  });
+  if (!response.ok) {
+    throw new Error(`API error: ${response.status} ${response.statusText}`);
+  }
+  return response.body as ReadableStream<Uint8Array>;
+};
+
+/**
  * Utility function to read a stream chunk by chunk and process each chunk
  * @param stream The ReadableStream to read from
  * @param onChunk Callback function to process each chunk

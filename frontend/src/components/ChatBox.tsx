@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { getChatStream, readStream } from '../services/api';
+import {getAskStream, getChatStream, readStream} from '../services/api';
 import './ChatBox.css';
 
 interface ChatBoxProps {
   className?: string;
+  type?: 'general' | 'ragged';
 }
 
 interface ChatMessage {
@@ -14,7 +15,7 @@ interface ChatMessage {
   isComplete: boolean;
 }
 
-export const ChatBox: React.FC<ChatBoxProps> = ({ className = '' }) => {
+export const ChatBox: React.FC<ChatBoxProps> = ({ className = '', type = 'general' }) => {
   const [question, setQuestion] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -27,7 +28,13 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ className = '' }) => {
   // Mutation for sending chat messages
   const chatMutation = useMutation({
     mutationFn: async (question: string) => {
-      const stream = await getChatStream(question);
+      let stream;
+      if(type === 'general') {
+        stream = await getChatStream(question);
+      } else {
+        stream = await getAskStream(question);
+
+      }
       return stream;
     },
     onSuccess: (stream) => {
@@ -96,47 +103,48 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ className = '' }) => {
   };
 
   return (
-    <div className={`chat-box ${className}`}>
-      <div className="messages-container">
-        {messages.length === 0 ? (
-          <div className="empty-state">
-            Ask a question to start the conversation
-          </div>
-        ) : (
-          messages.map((message) => (
-            <div 
-              key={message.id} 
-              className={`message ${message.isUser ? 'user-message' : 'ai-message'}`}
-            >
-              <div className="message-content">
-                {message.content || (message.isComplete ? '' : 'Thinking...')}
-                {!message.isComplete && !message.isUser && (
-                  <span className="typing-indicator">▌</span>
-                )}
+      <div className={`chat-box ${className}`}>
+        <div className="title-container">Chatbox type: {type.toUpperCase()}</div>
+        <div className="messages-container">
+          {messages.length === 0 ? (
+              <div className="empty-state">
+                Ask a question to start the conversation
               </div>
-            </div>
-          ))
-        )}
-        <div ref={messagesEndRef} />
-      </div>
+          ) : (
+              messages.map((message) => (
+                  <div
+                      key={message.id}
+                      className={`message ${message.isUser ? 'user-message' : 'ai-message'}`}
+                  >
+                    <div className="message-content">
+                      {message.content || (message.isComplete ? '' : 'Thinking...')}
+                      {!message.isComplete && !message.isUser && (
+                          <span className="typing-indicator">▌</span>
+                      )}
+                    </div>
+                  </div>
+              ))
+          )}
+          <div ref={messagesEndRef} />
+        </div>
 
-      <form onSubmit={handleSubmit} className="question-form">
-        <input
-          type="text"
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          placeholder="Ask a question..."
-          disabled={chatMutation.isPending}
-          className="question-input"
-        />
-        <button 
-          type="submit" 
-          disabled={chatMutation.isPending || !question.trim()}
-          className="submit-button"
-        >
-          {chatMutation.isPending ? 'Sending...' : 'Send'}
-        </button>
-      </form>
-    </div>
+        <form onSubmit={handleSubmit} className="question-form">
+          <input
+              type="text"
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              placeholder="Ask a question..."
+              disabled={chatMutation.isPending}
+              className="question-input"
+          />
+          <button
+              type="submit"
+              disabled={chatMutation.isPending || !question.trim()}
+              className="submit-button"
+          >
+            {chatMutation.isPending ? 'Sending...' : 'Send'}
+          </button>
+        </form>
+      </div>
   );
 };

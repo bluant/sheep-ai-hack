@@ -10,7 +10,9 @@ function App() {
       </header>
 
       <main className="app-main">
-        <ChatBox />
+        <ChatBox type="general"/>
+
+        <ChatBox type="ragged"/>
       </main>
 
       <footer className="app-footer">
